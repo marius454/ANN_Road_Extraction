@@ -5,9 +5,19 @@ from time import sleep
 
 
 # Normalize image color values to range [0, 1] in stead of [0-255]
-def normalize(input_image):
+def normalize_image(input_image):
     input_image = tf.cast(input_image, tf.float32) / 255.0
     return input_image
+
+def normalize_mask(input_mask):
+    input_mask = tf.where(input_mask > 128, 1, 0)
+    return input_mask
+    # for i in len(input_mask):
+    #     if input_mask[i] < 128:
+    #         input_mask[i] = 0
+    #     else:
+    #         input_mask[i] = 1
+    # return input_mask
 
 # Load images from selected directory into a tensorflow dataset
 def load_data (directory):
@@ -18,13 +28,13 @@ def load_data (directory):
         if filename.endswith(".jpg"):
             img = tf.io.read_file(directory + filename,)
             img = decode_img(img)
-            img = normalize(img)
+            img = normalize_image(img)
             images.append (img)
         else:
             mask = tf.io.read_file(directory + filename)
             mask = decode_mask(mask)
-            mask = normalize(mask)
-            mask = tf.image.convert_image_dtype(mask, tf.uint8)
+            mask = normalize_image(mask)
+            # mask = tf.image.convert_image_dtype(mask, tf.uint8)
             masks.append(mask)
 
     images = tf.convert_to_tensor(images)
@@ -34,7 +44,7 @@ def load_data (directory):
 
 
     dataset = tf.data.Dataset.from_tensor_slices((images, masks))
-    sleep(10)
+    print(dataset)
     # print(dataset)
     # print(type(dataset))
 

@@ -21,10 +21,10 @@ down_stack = tf.keras.Model(inputs=base_model.input, outputs=base_model_outputs)
 down_stack.trainable = False
 
 up_stack = [
-    pix2pix.upsample(896, 3),  # 7x7 -> 14x14
-    pix2pix.upsample(448, 3),  # 14x14 -> 28x28
-    pix2pix.upsample(224, 3),  # 28x28 -> 56x56
-    pix2pix.upsample(112, 3),   # 56x56 -> 112x112
+    pix2pix.upsample(var.img_width * 4, 3),  # 7x7 -> 14x14
+    pix2pix.upsample(var.img_width * 2, 3),  # 14x14 -> 28x28
+    pix2pix.upsample(var.img_width, 3),  # 28x28 -> 56x56
+    pix2pix.upsample(var.img_width / 2, 3),   # 56x56 -> 112x112
 ]
 
 def unet_model(output_channels:int):

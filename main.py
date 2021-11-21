@@ -17,24 +17,24 @@ train_batches = (
     .cache()
     .shuffle(var.BUFFER_SIZE)
     .batch(var.BATCH_SIZE)
-    .repeat()
+    # .repeat()
     .map(Augment())
     .prefetch(buffer_size=tf.data.AUTOTUNE))
 
 test_batches = fp.load_data("../data/test(small)/").batch(var.BATCH_SIZE)
 
-# for images, masks in train_batches.take(1):
-#   var.sample_image, var.sample_mask = images[0], masks[0]
-#   # display([sample_image, sample_mask])
+for images, masks in train_batches.take(1):
+  var.sample_image, var.sample_mask = images[0], masks[0]
+#   display([var.sample_image, var.sample_mask])
 
-# # Model.create_model(visualize=True)
-# # Model.show_predictions()
+# Model.create_model(visualize=True)
+# Model.show_predictions()
 
-# var.model = Model.create_model()
+var.model = Model.create_model()
 
-# model_history = var.model.fit(train_batches, epochs=var.EPOCHS,
-#                           steps_per_epoch=var.STEPS_PER_EPOCH,
-#                           validation_steps=var.VALIDATION_STEPS,
-#                           validation_data=test_batches,
-#                           callbacks=[DisplayCallback()])
+model_history = var.model.fit(train_batches, epochs=var.EPOCHS,
+                          steps_per_epoch=None,
+                          validation_steps=None,
+                          validation_data=test_batches,
+                          callbacks=[DisplayCallback()])
 
