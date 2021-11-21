@@ -29,12 +29,14 @@ def load_data (directory):
 
     images = tf.convert_to_tensor(images)
     masks = tf.convert_to_tensor(masks)
+    print (images[0])
+    print (masks[0])
 
 
     dataset = tf.data.Dataset.from_tensor_slices((images, masks))
     sleep(10)
-    print(dataset)
-    print(type(dataset))
+    # print(dataset)
+    # print(type(dataset))
 
     return dataset
 
