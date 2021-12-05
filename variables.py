@@ -1,5 +1,5 @@
-img_width = 224   #224
-img_height = 224  #224
+img_width = 128   #224
+img_height = 128  #224
 
 TRAIN_PATH = "../data/train/"
 TEST_PATH = "../data/test/"
@@ -10,7 +10,7 @@ BATCH_SIZE = 64
 BUFFER_SIZE = TRAIN_LENGTH
 STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
 
-EPOCHS = 20
+EPOCHS = 80
 VAL_SUBSPLITS = 5
 VALIDATION_STEPS = TEST_LENGTH//BATCH_SIZE//VAL_SUBSPLITS
 

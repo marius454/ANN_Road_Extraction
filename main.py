@@ -45,13 +45,14 @@ def train_model():
 
   SaveCallback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
                                                   save_weights_only=True,
-                                                  save_freq=5*var.BATCH_SIZE,
+                                                  # save_freq=int(5*round(var.TRAIN_LENGTH / var.BATCH_SIZE)),
                                                   verbose=1)
 
   model_history = var.model.fit(train_batches, epochs=var.EPOCHS,
                             steps_per_epoch = None,
                             validation_steps = None,
                             validation_data=test_batches,
+                            # callbacks=[DisplayCallback()],
                             callbacks=[DisplayCallback(), SaveCallback],
                             verbose = 1)
 
