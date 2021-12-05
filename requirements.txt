@@ -1,0 +1,10 @@
+tensorflow
+tensorflow_datasets
+git+https://github.com/tensorflow/examples.git
+numpy
+matplotlib
+IPython
+sklearn
+pyyaml h5py
+
+
