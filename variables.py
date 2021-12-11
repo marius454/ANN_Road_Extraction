@@ -6,12 +6,15 @@ img_height = 128  #224 max
 TRAIN_PATH = "../data/train/"
 TEST_PATH = "../data/test/"
 # The number of samples taken for training 
-TRAIN_LENGTH = 5292 # 5292 max
-TEST_LENGTH = 934   # 934 max
+TRAIN_LENGTH = 1000 # 5292 max
+TEST_LENGTH = 150   # 934 max
 BATCH_SIZE = 64
 # Used for shuffle, best practice is the same size or larger than the dataset
 BUFFER_SIZE = TRAIN_LENGTH
-EPOCHS = 80
+EPOCHS = 10
+# Class weights for background and road pixels
+BACKGROUND_WEIGHT = 1
+ROAD_WEIGHT = 8
 
 # Some global variables
 model = None

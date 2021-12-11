@@ -62,3 +62,13 @@ def decode_img(img):
 def decode_mask(mask):
     mask = tf.io.decode_png(mask, channels=1)
     return tf.image.resize(mask, [var.img_height, var.img_width])
+
+def add_sample_weights(image, label):
+    # Set class weights
+    class_weights = tf.constant([var.BACKGROUND_WEIGHT, var.ROAD_WEIGHT])
+    # Normalize to range [0, 1]
+    class_weights = tf.cast((class_weights/tf.reduce_sum(class_weights)), dtype=tf.float32)
+    # Create sample weights
+    sample_weights = tf.gather(class_weights, indices=tf.cast(label, tf.int32))
+
+    return image, label, sample_weights

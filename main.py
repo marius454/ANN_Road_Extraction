@@ -23,6 +23,7 @@ chekcpoint_dir = os.path.dirname(checkpoint_path)
 
 # Train model based on the variables given in the variables.py file
 def train_model():
+  # Load training data
   train_batches = (
       fp.load_data(var.TRAIN_PATH, True)
       .cache()
@@ -31,19 +32,28 @@ def train_model():
       # .repeat()
       .map(Augment())
       .prefetch(buffer_size=tf.data.AUTOTUNE))
-
+  print(train_batches)
+  # Load_testing data
   test_batches = fp.load_data(var.TEST_PATH, False).batch(var.BATCH_SIZE)
 
+  # Select a sample image and mask for display callback
   for images, masks in train_batches.take(3):
     var.sample_image, var.sample_mask = images[0], masks[0]
-
+  # Add class weights to training data
+  train_batches = train_batches.map(fp.add_sample_weights)
+  test_batches = test_batches.map(fp.add_sample_weights)
+  print(train_batches)
+  print(test_batches)
+  # Instantiate model
   var.model = Model.create_model()
 
+  # Instantiate callback for saving model to file
   SaveCallback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
                                                   save_weights_only=True,
                                                   # save_freq=int(5*round(var.TRAIN_LENGTH / var.BATCH_SIZE)),
                                                   verbose=1)
 
+  # Train the model
   model_history = var.model.fit(train_batches, epochs=var.EPOCHS,
                             steps_per_epoch = None,
                             validation_steps = None,
@@ -63,14 +73,15 @@ def load_trained_model(save_path, num_samples):
   Model.show_predictions(test_data)
   Model.show_predictions(train_data)
 
-# Leave only one of these uncommented at one time
-# Use for loading an already trained model and displaying the first 3 image predictions from testing data and 3 image predictions from training data
-load_trained_model("training/deviceGPU040_epochs", 3) # trained with GPU all data and 40 epochs
+## Leave only one of these uncommented at one time
+## Use for loading an already trained model and displaying the first 3 image predictions from testing data and 3 image predictions from training data
+# load_trained_model("training/deviceGPU040_epochs", 3) # trained with GPU all data and 40 epochs
 # load_trained_model("training/deviceGPU0brute_force", 3) # trained with GPU all data and 80 epochs
 
-# Use to train a model. Warning: might overwrite previous model, if this is unwanted,
-# change the "checkpoint_name" variable.
-# train_model()
+
+## Use to train a model. Warning: might overwrite previous model, if this is unwanted,
+## change the "checkpoint_name" variable.
+train_model()
 
   
 

@@ -1,2 +1,2 @@
-model_checkpoint_path: "deviceGPU0brute_force"
-all_model_checkpoint_paths: "deviceGPU0brute_force"
+model_checkpoint_path: "test"
+all_model_checkpoint_paths: "test"
