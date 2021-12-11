@@ -1,0 +1,9 @@
+tensorflow
+tensorflow_datasets
+git+https://github.com/tensorflow/examples.git
+numpy
+matplotlib
+IPython
+pyyaml h5py
+
+

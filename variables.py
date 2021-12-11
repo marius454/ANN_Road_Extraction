@@ -1,22 +1,20 @@
-img_width = 128   #224
-img_height = 128  #224
+# The Shape of the model and the resizing of images
+img_width = 128   #224 max
+img_height = 128  #224 max
 
+# The path to the training and tesing data (data is only extranted no other processing is done outside of code)
 TRAIN_PATH = "../data/train/"
 TEST_PATH = "../data/test/"
-TRAIN_LENGTH = 5292 # 5292
-TEST_LENGTH = 934   # 934
+# The number of samples taken for training 
+TRAIN_LENGTH = 5292 # 5292 max
+TEST_LENGTH = 934   # 934 max
 BATCH_SIZE = 64
-# Used for shuffle best practice is for it to be the same size or larger than the dataset
+# Used for shuffle, best practice is the same size or larger than the dataset
 BUFFER_SIZE = TRAIN_LENGTH
-STEPS_PER_EPOCH = TRAIN_LENGTH // BATCH_SIZE
-
 EPOCHS = 80
-VAL_SUBSPLITS = 5
-VALIDATION_STEPS = TEST_LENGTH//BATCH_SIZE//VAL_SUBSPLITS
 
+# Some global variables
 model = None
 sample_image = None
 sample_mask = None
-sample_images = []
-sample_masks = []
 sample_weight = list()

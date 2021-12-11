@@ -7,11 +7,11 @@ base_model = tf.keras.applications.MobileNetV2(input_shape=[var.img_width, var.i
 
 # Use the activations of these layers
 layer_names = [
-    'block_1_expand_relu',   # 112x112
-    'block_3_expand_relu',   # 56x56
-    'block_6_expand_relu',   # 28x28
-    'block_13_expand_relu',  # 14x14
-    'block_16_project',      # 7x7
+    'block_1_expand_relu',
+    'block_3_expand_relu',
+    'block_6_expand_relu',
+    'block_13_expand_relu',
+    'block_16_project',
 ]
 base_model_outputs = [base_model.get_layer(name).output for name in layer_names]
 
@@ -21,10 +21,10 @@ down_stack = tf.keras.Model(inputs=base_model.input, outputs=base_model_outputs)
 down_stack.trainable = False
 
 up_stack = [
-    pix2pix.upsample(var.img_width * 4, 3),  # 7x7 -> 14x14
-    pix2pix.upsample(var.img_width * 2, 3),  # 14x14 -> 28x28
-    pix2pix.upsample(var.img_width, 3),  # 28x28 -> 56x56
-    pix2pix.upsample(var.img_width / 2, 3),   # 56x56 -> 112x112
+    pix2pix.upsample(var.img_width * 4, 3),
+    pix2pix.upsample(var.img_width * 2, 3),
+    pix2pix.upsample(var.img_width, 3),
+    pix2pix.upsample(var.img_width / 2, 3),
 ]
 
 def unet_model(output_channels:int):
@@ -60,6 +60,7 @@ def create_model(visualize=False):
                 loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                 metrics=['accuracy'])
 
+    # Set visualize to true if you want to change the image in Model.png
     if (visualize):
       tf.keras.utils.plot_model(model, show_shapes=True)
 
@@ -76,9 +77,4 @@ def show_predictions(dataset=None, num=1):
       pred_mask = var.model.predict(image)
       display([image[0], mask[0], create_mask(pred_mask)])
   else:
-    if num == 1:
-      display([var.sample_image, var.sample_mask, create_mask(var.model.predict(var.sample_image[tf.newaxis, ...]))])
-    # elif num == 3:
-    #   display3([[var.sample_images[0], var.sample_masks[0], create_mask(var.model.predict(var.sample_images[0][tf.newaxis, ...]))],
-    #   [var.sample_images[1], var.sample_masks[1], create_mask(var.model.predict(var.sample_images[1][tf.newaxis, ...]))],
-    #   [var.sample_images[2], var.sample_masks[2], create_mask(var.model.predict(var.sample_images[2][tf.newaxis, ...]))]])
+    display([var.sample_image, var.sample_mask, create_mask(var.model.predict(var.sample_image[tf.newaxis, ...]))])

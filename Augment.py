@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+# Used to randomly flip images for better training
 class Augment(tf.keras.layers.Layer):
   def __init__(self, seed=42):
     super().__init__()

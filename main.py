@@ -12,14 +12,16 @@ import variables as var
 import Model
 from callbacks import DisplayCallback
 
+# Set paths for loading or saving models
 checkpoint_path = ""
-checkpoint_name = "brute_force"
+checkpoint_name = "test"
 if tf.test.is_gpu_available():
   checkpoint_path = "training/" + tf.test.gpu_device_name().translate(str.maketrans('','',string.punctuation)) + checkpoint_name
 else:
   checkpoint_path = "training/" + checkpoint_name
 chekcpoint_dir = os.path.dirname(checkpoint_path)
 
+# Train model based on the variables given in the variables.py file
 def train_model():
   train_batches = (
       fp.load_data(var.TRAIN_PATH, True)
@@ -34,12 +36,6 @@ def train_model():
 
   for images, masks in train_batches.take(3):
     var.sample_image, var.sample_mask = images[0], masks[0]
-    # var.sample_images.append(images[0])
-    # var.sample_masks.append(masks[0])
-  #   display([var.sample_image, var.sample_mask])
-
-  # Model.create_model(visualize=True)
-  # Model.show_predictions()
 
   var.model = Model.create_model()
 
@@ -56,19 +52,21 @@ def train_model():
                             callbacks=[DisplayCallback(), SaveCallback],
                             verbose = 1)
 
-  # Model.show_predictions(test_batches)
 
-def load_trained_model():
+def load_trained_model(save_path, num_samples):
   var.model = Model.create_model()
-  var.model.load_weights(checkpoint_path)
+  var.model.load_weights(save_path)
 
-  test_batches = fp.load_data(var.TEST_PATH, False, num = 3).batch(var.BATCH_SIZE)
+  test_data = fp.load_data(var.TEST_PATH, training = False, num = num_samples).batch(1)
+  train_data = fp.load_data(var.TRAIN_PATH, training = True, num = num_samples).batch(1)
 
-  Model.show_predictions(test_batches)
+  Model.show_predictions(test_data)
+  Model.show_predictions(train_data)
 
 # Leave only one of these uncommented at one time
-# Use for loading an already trained model, change "checkpoint_name" variable to select which model to run
-load_trained_model()
+# Use for loading an already trained model and displaying the first 3 image predictions from testing data and 3 image predictions from training data
+load_trained_model("training/deviceGPU040_epochs", 3) # trained with GPU all data and 40 epochs
+# load_trained_model("training/deviceGPU0brute_force", 3) # trained with GPU all data and 80 epochs
 
 # Use to train a model. Warning: might overwrite previous model, if this is unwanted,
 # change the "checkpoint_name" variable.
