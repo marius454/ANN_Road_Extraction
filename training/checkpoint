@@ -1,2 +1,2 @@
-model_checkpoint_path: "test"
-all_model_checkpoint_paths: "test"
+model_checkpoint_path: "deviceGPU0_Batch32_Sample1-10_Epochs40_Image128"
+all_model_checkpoint_paths: "deviceGPU0_Batch32_Sample1-10_Epochs40_Image128"

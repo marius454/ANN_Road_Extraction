@@ -5,5 +5,7 @@ numpy
 matplotlib
 IPython
 pyyaml h5py
-
+tf-nightly
+pydot
+graphviz (https://graphviz.gitlab.io/download/)
 

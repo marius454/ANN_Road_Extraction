@@ -1,7 +1,9 @@
+from numpy import dtype
 import tensorflow as tf
 import variables as var
 from tensorflow_examples.models.pix2pix import pix2pix
-from display import display#, display3
+from display import display
+import tensorflow.python.keras.metrics
 
 base_model = tf.keras.applications.MobileNetV2(input_shape=[var.img_width, var.img_height, 3], include_top=False)
 
@@ -42,23 +44,29 @@ def unet_model(output_channels:int):
     x = concat([x, skip])
 
   # This is the last layer of the model
-  last = tf.keras.layers.Conv2DTranspose(
+  cnn_layer = tf.keras.layers.Conv2DTranspose(
       filters=output_channels, kernel_size=3, strides=2,
       padding='same') 
 
-  x = last(x)
+  x = cnn_layer(x)
 
   return tf.keras.Model(inputs=inputs, outputs=x)
-
 
 def create_model(visualize=False):
     OUTPUT_CLASSES = 2
 
+    iou = UpdatedIoU(
+      num_classes = OUTPUT_CLASSES,
+      target_class_ids = [1],
+      name = "IoU"
+    )
     model = unet_model(output_channels=OUTPUT_CLASSES)
     model.compile(optimizer='adam',
                 # loss = "binary_crossentropy",
                 loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-                metrics=['accuracy'])
+                # metrics=['accuracy'],
+                metrics=['accuracy', iou],
+              )
 
     # Set visualize to true if you want to change the image in Model.png
     if (visualize):
@@ -78,3 +86,18 @@ def show_predictions(dataset=None, num=1):
       display([image[0], mask[0], create_mask(pred_mask)])
   else:
     display([var.sample_image, var.sample_mask, create_mask(var.model.predict(var.sample_image[tf.newaxis, ...]))])
+    
+# A modified IoU metric class for compatibility with SparseCategoricalCrossentropy() loss function
+class UpdatedIoU(tf.keras.metrics.IoU):
+  def __init__(self,
+               y_true=None,
+               y_pred=None,
+               num_classes=None,
+               target_class_ids = None,
+               name=None,
+               dtype=None):
+    super(UpdatedIoU, self).__init__(num_classes = num_classes, target_class_ids = target_class_ids, name=name, dtype=dtype)
+
+  def update_state(self, y_true, y_pred, sample_weight=None):
+    y_pred = tf.math.argmax(y_pred, axis=-1)
+    return super().update_state(y_true, y_pred, sample_weight)
