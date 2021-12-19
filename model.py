@@ -3,7 +3,6 @@ import tensorflow as tf
 import variables as var
 from tensorflow_examples.models.pix2pix import pix2pix
 from display import display
-import tensorflow.python.keras.metrics
 
 base_model = tf.keras.applications.MobileNetV2(input_shape=[var.img_width, var.img_height, 3], include_top=False)
 
@@ -62,9 +61,7 @@ def create_model(visualize=False):
     )
     model = unet_model(output_channels=OUTPUT_CLASSES)
     model.compile(optimizer='adam',
-                # loss = "binary_crossentropy",
                 loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-                # metrics=['accuracy'],
                 metrics=['accuracy', iou],
               )
 
