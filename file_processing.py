@@ -8,12 +8,13 @@ from random import randrange
 
 # Normalize image color values to range [0, 1] in stead of [0-255]
 def normalize_image(input_image):
-    input_image = tf.cast(input_image, tf.float32) / 255.0
+    input_image = tf.cast(input_image, tf.float16) / 255.0
     return input_image
 
 # Normalize(threshold) the mask to a binary 0 or 1 mask
 def normalize_mask(input_mask):
     input_mask = tf.where(input_mask > 1, 1, 0)
+    input_mask = tf.cast(input_mask, tf.int16)
     return input_mask
 
 def load_data (directory, training, num = None):
@@ -46,6 +47,9 @@ def load_data (directory, training, num = None):
             masks.append(mask)
 
     # Transform sets of images to tensors
+    # images = tf.convert_to_tensor(images, dtype = tf.float16)
+    # masks = tf.convert_to_tensor(masks, dtype = tf.int8)
+
     images = tf.convert_to_tensor(images)
     masks = tf.convert_to_tensor(masks)
 
@@ -67,7 +71,7 @@ def add_sample_weights(image, label):
     # Set class weights
     class_weights = tf.constant([var.BACKGROUND_WEIGHT, var.ROAD_WEIGHT])
     # Normalize to range [0, 1]
-    class_weights = tf.cast((class_weights/tf.reduce_sum(class_weights)), dtype=tf.float32)
+    class_weights = tf.cast((class_weights/tf.reduce_sum(class_weights)), dtype=tf.float16)
     # Create sample weights
     sample_weights = tf.gather(class_weights, indices=tf.cast(label, tf.int32))
 

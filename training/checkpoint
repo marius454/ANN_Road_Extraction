@@ -1,2 +1,2 @@
-model_checkpoint_path: "deviceGPU0_Batch32_Sample1-10_Epochs40_Image128"
-all_model_checkpoint_paths: "deviceGPU0_Batch32_Sample1-10_Epochs40_Image128"
+model_checkpoint_path: "deviceGPU0_Kaggle_comparison_data3000"
+all_model_checkpoint_paths: "deviceGPU0_Kaggle_comparison_data3000"
