@@ -63,7 +63,7 @@ def train_model():
                                                   verbose=1)
   ## Train the model
   model_history = var.model.fit(train_batches, epochs=var.EPOCHS,
-                            steps_per_epoch = var.STEPS_PER_EPOCH,
+                            # steps_per_epoch = var.STEPS_PER_EPOCH,
                             steps_per_epoch = None,
                             validation_steps = None,
                             validation_data=test_batches,
@@ -120,14 +120,14 @@ def load_trained_model(save_path, num_test, num_train, evaluate=False):
 # load_trained_model("training/deviceGPU0_Batch16_Sample1-6_Epochs20_Image128", num_test=10, num_train=1) # trained with GPU all data, batch size of 16, class weight ratio in 
 # load_trained_model("training/deviceGPU0_Batch16_Sample1-6_Epochs20_Image224", num_test=10, num_train=1) # trained with GPU all data and 40 epochs
 
-# load_trained_model("training/deviceGPU0_Weight1-3_Epochs15_Image224_AllData", num_test=10, num_train=1)
+load_trained_model("training/deviceGPU0_Weight1-3_Epochs30-best_Image224_Data3000", num_test=10, num_train=1)
 
 ## Use for loading the selected number of testing and training data and evaluate the selected model on that data
 # load_trained_model("training/deviceGPU0_Weight1-3_Epochs30-best_Image224_Data3000", num_test = 934, num_train = 100, evaluate=True)
 
 ## Use to train a model. Warning: might overwrite previous model, if this is unwanted, change the "checkpoint_name" variable.
 ## You can set the variables for training in the variables.py file
-train_model()
+# train_model()
 # Geriausias variantas svoriai 1:3 ir 15 epochu, nes veliau prasideda overfitting
 
 

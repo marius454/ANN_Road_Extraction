@@ -54,7 +54,7 @@ def unet_model(output_channels:int):
   x = cnn_layer(x)
 
   # Softmax layer
-  # x = tf.keras.layers.Softmax()(x)
+  x = tf.keras.layers.Softmax()(x)
 
   # Batch normalization
   # x = tf.keras.layers.BatchNormalization()(x)
@@ -65,31 +65,31 @@ def create_model(visualize=False):
     OUTPUT_CLASSES = 2
 
     ## Original model initialization
-    # iou = UpdatedIoU(
-    #   num_classes = OUTPUT_CLASSES,
-    #   target_class_ids = [1],
-    #   name = "IoU"
-    # )
-    # model = unet_model(output_channels=OUTPUT_CLASSES)
-    # model.compile(optimizer='adam',
-    #             loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-    #             metrics=['accuracy', iou],
-    #           )
-    ## -----------------------------
-
-    ## Initialize different model from kaggle:
-    iou = KaggleIoU(
+    iou = UpdatedIoU(
       num_classes = OUTPUT_CLASSES,
       target_class_ids = [1],
       name = "IoU"
     )
+    model = unet_model(output_channels=OUTPUT_CLASSES)
+    model.compile(optimizer='adam',
+                loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                metrics=['accuracy', iou],
+              )
+    ## -----------------------------
 
-    inputs = tf.keras.layers.Input((var.img_width, var.img_width, 3))
-    model = GiveMeUnet(inputs, droupouts= 0.07)
-    model.compile(optimizer = 'Adam', loss = 'binary_crossentropy', metrics = ['accuracy', iou] )
+    ## Initialize different model from kaggle:
+    # iou = KaggleIoU(
+    #   num_classes = OUTPUT_CLASSES,
+    #   target_class_ids = [1],
+    #   name = "IoU"
+    # )
+
+    # inputs = tf.keras.layers.Input((var.img_width, var.img_width, 3))
+    # model = GiveMeUnet(inputs, droupouts= 0.07)
+    # model.compile(optimizer = 'Adam', loss = 'binary_crossentropy', metrics = ['accuracy', iou] )
     
-    from keras.utils.vis_utils import plot_model
-    plot_model(model, to_file='UnetArchitecture.png', show_shapes=True, show_layer_names=True)
+    # from keras.utils.vis_utils import plot_model
+    # plot_model(model, to_file='UnetArchitecture.png', show_shapes=True, show_layer_names=True)
     ## -----------------------------
 
     # Set visualize to true if you want to change the image in Model.png
@@ -104,7 +104,10 @@ def create_mask(pred_mask):
   return pred_mask[0]
 
 def create_range_mask(pred_mask):
-  pred_mask = tf.unstack(pred_mask, axis=-1)[1]
+  print(pred_mask)
+  unstacked = tf.unstack(pred_mask, axis=-1)
+  pred_mask = unstacked[1]
+  pred_mask = pred_mask[..., tf.newaxis]
   return pred_mask[0]
 
 def show_predictions(dataset=None, kaggle = False):
